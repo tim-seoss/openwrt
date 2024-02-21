@@ -34,7 +34,9 @@ hpe,1920-8g|\
 hpe,1920-8g-poe-65w|\
 hpe,1920-8g-poe-180w|\
 hpe,1920-16g|\
-hpe,1920-24g)
+hpe,1920-24g|\
+hpe,1920-24g-poe-180w|\
+hpe,1920-24g-poe-370w)
 	label_mac=$(mtd_get_mac_binary factory 0x68)
 	lan_mac=$label_mac
 	mac_count1=$(hexdump -v -n 4 -s 0x110 -e '4 "%d"' $(find_mtd_part factory) 2>/dev/null)
@@ -75,7 +77,8 @@ d-link,dgs-1210-10mp-f)
 d-link,dgs-1210-10p)
 	ucidef_set_poe 65 "$lan_list" "lan9 lan10"
 	;;
-d-link,dgs-1210-28mp-f)
+d-link,dgs-1210-28mp-f|\
+hpe,1920-24g-poe-370w)
 	ucidef_set_poe 370 "lan8 lan7 lan6 lan5 lan4 lan3 lan2 lan1 lan16 lan15 lan14 lan13 lan12 lan11 lan10 lan9 lan24 lan23
 			lan22 lan21 lan20 lan19 lan18 lan17" "lan25 lan26 lan27 lan28"
 	;;
@@ -87,6 +90,10 @@ hpe,1920-8g-poe-65w)
 	;;
 hpe,1920-8g-poe-180w)
 	ucidef_set_poe 180 "$lan_list_rev" "lan9 lan10"
+	;;
+hpe,1920-24g-poe-180w)
+	ucidef_set_poe 180 "lan8 lan7 lan6 lan5 lan4 lan3 lan2 lan1 lan16 lan15 lan14 lan13 lan12 lan11 lan10 lan9 lan24 lan23
+			lan22 lan21 lan20 lan19 lan18 lan17" "lan25 lan26 lan27 lan28"
 	;;
 netgear,gs110tpp-v1)
 	ucidef_set_poe 130 "$lan_list" "lan9 lan10"
