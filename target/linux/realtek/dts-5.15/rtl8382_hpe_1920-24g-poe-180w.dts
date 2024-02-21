@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include "rtl8382_hpe_1920-24g.dtsi"
+
+/ {
+	compatible = "hpe,1920-24g-poe-180w", "realtek,rtl838x-soc";
+	model = "HPE 1920-24G-PoE+ 180W (JG925A)";
+
+	gpio-fan-chassis-array {
+		compatible = "gpio-fan";
+
+		/* Hardware implements "high/low" fan control only. On devices
+		 * with multiple fans (e.g. three on the JG926A) all are
+		 * controlled by this GPIO. */
+		gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
+		/* Estimated fan RPMs based on fan datasheet. */
+		gpio-fan,speed-map = <5000 0>, <10000 1>;
+		#cooling-cells = <2>;
+		/* Asserted by insufficient RPM reading of one or more fans. */
+		alarm-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+	};
+};
+
+/* Internal UART used for PoE management microcontroller communication. */
+
+&uart1 {
+	status = "okay";
+};
