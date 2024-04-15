@@ -20,6 +20,7 @@ PKG_CPE_ID:=cpe:/a:w1.fi:hostapd
 PKG_BUILD_PARALLEL:=1
 PKG_ASLR_PIE_REGULAR:=1
 
+# FIXME macsec?
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_hostapd \
 	CONFIG_PACKAGE_hostapd-basic \
@@ -64,6 +65,10 @@ SSL_VARIANT=$(strip \
 
 CONFIG_VARIANT:=$(LOCAL_VARIANT)
 ifeq ($(LOCAL_VARIANT),mesh)
+  CONFIG_VARIANT:=full
+endif
+
+ifeq ($(LOCAL_VARIANT),macsec)
   CONFIG_VARIANT:=full
 endif
 
@@ -396,6 +401,16 @@ endef
 
 Package/wpad-mesh-mbedtls/description = $(Package/wpad-mesh/description)
 
+define Package/wpad-macsec
+$(call Package/wpad/Default,$(1))
+  DEPENDS+=@(!TARGET_uml||BROKEN)
+  PROVIDES+=wpa-supplicant-macsec wpad-macsec
+endef
+
+define Package/wpad-macsec/description
+ This package contains a full featured IEEE 802.1x/WPA/EAP/RADIUS Authenticator and Supplicant with additional 802.11ae (MACsec) support.
+endef
+
 define Package/wpad-macsec-mbedtls
 $(call Package/wpad/wpad-macsec,$(1))
   TITLE+= (mbedTLS, 11ae)
@@ -403,9 +418,8 @@ $(call Package/wpad/wpad-macsec,$(1))
   VARIANT:=wpad-macsec-mbedtls
 endef
 
-define Package/wpad-macsec-mbedtls/description
- This package contains a full featured IEEE 802.1x/WPA/EAP/RADIUS Authenticator and Supplicant with additional 802.11ae (MACsec) support.
-endef
+
+Package/wpad-macsec-mbedtls/description = Package/wpad-macsec/description
 
 define Package/wpa-supplicant/Default
   SECTION:=net
