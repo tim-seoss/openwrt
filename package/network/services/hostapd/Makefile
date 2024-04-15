@@ -414,10 +414,9 @@ endef
 define Package/wpad-macsec-mbedtls
 $(call Package/wpad/wpad-macsec,$(1))
   TITLE+= (mbedTLS, 11ae)
-  DEPENDS+=+PACKAGE_wpa-supplicant-mesh-mbedtls:libmbedtls +libnl -libnl-tiny
+  DEPENDS+=+PACKAGE_wpad-mesh-mbedtls:libmbedtls +libnl -libnl-tiny
   VARIANT:=wpad-macsec-mbedtls
 endef
-
 
 Package/wpad-macsec-mbedtls/description = Package/wpad-macsec/description
 
