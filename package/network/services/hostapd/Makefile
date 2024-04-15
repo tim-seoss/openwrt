@@ -414,7 +414,7 @@ endef
 define Package/wpad-macsec-mbedtls
 $(call Package/wpad/wpad-macsec,$(1))
   TITLE+= (mbedTLS, 11ae)
-  DEPENDS+=+PACKAGE_wpad-mesh-mbedtls:libmbedtls +libnl -libnl-tiny
+  DEPENDS+=+PACKAGE_wpad-macsec-mbedtls:libmbedtls +libnl
   VARIANT:=wpad-macsec-mbedtls
 endef
 
@@ -502,7 +502,7 @@ define Package/wpa-supplicant-macsec-mbedtls
 $(call Package/wpa-supplicant-macsec-mbedtls/Default,$(1))
   TITLE+= (mbedTLS, 11ae)
   VARIANT:=supplicant-macsec-mbedtls
-  DEPENDS+=+PACKAGE_wpa-supplicant-mesh-mbedtls:libmbedtls +libnl -libnl-tiny
+  DEPENDS+=+PACKAGE_wpa-supplicant-macsec-mbedtls:libmbedtls +libnl
 endef
 
 define Package/wpa-supplicant-basic
@@ -734,6 +734,7 @@ ifeq ($(CONFIG_VARIANT),full)
 Package/wpad-mesh-openssl/conffiles = $(Package/hostapd-full/conffiles)
 Package/wpad-mesh-wolfssl/conffiles = $(Package/hostapd-full/conffiles)
 Package/wpad-mesh-mbedtls/conffiles = $(Package/hostapd-full/conffiles)
+Package/wpad-macsec-mbedtls/conffiles = $(Package/hostapd-full/conffiles)
 Package/wpad/conffiles = $(Package/hostapd-full/conffiles)
 Package/wpad-openssl/conffiles = $(Package/hostapd-full/conffiles)
 Package/wpad-wolfssl/conffiles = $(Package/hostapd-full/conffiles)
@@ -805,6 +806,7 @@ Package/wpad-mbedtls/install = $(Package/wpad/install)
 Package/wpad-mesh-openssl/install = $(Package/wpad/install)
 Package/wpad-mesh-wolfssl/install = $(Package/wpad/install)
 Package/wpad-mesh-mbedtls/install = $(Package/wpad/install)
+Package/wpad-macsec-mbedtls/install = $(Package/wpad/install)
 
 define Package/wpa-supplicant/install
 	$(call Install/supplicant,$(1))
@@ -819,6 +821,7 @@ Package/wpa-supplicant-mbedtls/install = $(Package/wpa-supplicant/install)
 Package/wpa-supplicant-mesh-openssl/install = $(Package/wpa-supplicant/install)
 Package/wpa-supplicant-mesh-wolfssl/install = $(Package/wpa-supplicant/install)
 Package/wpa-supplicant-mesh-mbedtls/install = $(Package/wpa-supplicant/install)
+Package/wpa-supplicant-macsec-mbedtls/install = $(Package/wpa-supplicant/install)
 
 ifneq ($(LOCAL_TYPE),hostapd)
   define Package/wpa-cli/install
@@ -871,6 +874,7 @@ $(eval $(call BuildPackage,wpad))
 $(eval $(call BuildPackage,wpad-mesh-openssl))
 $(eval $(call BuildPackage,wpad-mesh-wolfssl))
 $(eval $(call BuildPackage,wpad-mesh-mbedtls))
+$(eval $(call BuildPackage,wpad-macsec-mbedtls))
 $(eval $(call BuildPackage,wpad-basic))
 $(eval $(call BuildPackage,wpad-basic-openssl))
 $(eval $(call BuildPackage,wpad-basic-wolfssl))
@@ -883,6 +887,7 @@ $(eval $(call BuildPackage,wpa-supplicant))
 $(eval $(call BuildPackage,wpa-supplicant-mesh-openssl))
 $(eval $(call BuildPackage,wpa-supplicant-mesh-wolfssl))
 $(eval $(call BuildPackage,wpa-supplicant-mesh-mbedtls))
+$(eval $(call BuildPackage,wpa-supplicant-macsec-mbedtls))
 $(eval $(call BuildPackage,wpa-supplicant-basic))
 $(eval $(call BuildPackage,wpa-supplicant-mini))
 $(eval $(call BuildPackage,wpa-supplicant-p2p))

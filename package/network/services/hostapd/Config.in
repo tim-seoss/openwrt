@@ -8,6 +8,7 @@ config WPA_RFKILL_SUPPORT
 		   PACKAGE_wpa-supplicant-mesh-openssl || \
 		   PACKAGE_wpa-supplicant-mesh-wolfssl || \
 		   PACKAGE_wpa-supplicant-mesh-mbedtls || \
+		   PACKAGE_wpa-supplicant-macsec-mbedtls || \
 		   PACKAGE_wpa-supplicant-basic || \
 		   PACKAGE_wpa-supplicant-mini || \
 		   PACKAGE_wpa-supplicant-p2p || \
@@ -22,7 +23,8 @@ config WPA_RFKILL_SUPPORT
 		   PACKAGE_wpad-mini || \
 		   PACKAGE_wpad-mesh-openssl || \
 		   PACKAGE_wpad-mesh-wolfssl || \
-		   PACKAGE_wpad-mesh-mbedtls
+		   PACKAGE_wpad-mesh-mbedtls || \
+		   PACKAGE_wpad-macsec-mbedtls
 	default n
 
 config WPA_MSG_MIN_PRIORITY
@@ -34,6 +36,7 @@ config WPA_MSG_MIN_PRIORITY
 		   PACKAGE_wpa-supplicant-mesh-openssl || \
 		   PACKAGE_wpa-supplicant-mesh-wolfssl || \
 		   PACKAGE_wpa-supplicant-mesh-mbedtls || \
+		   PACKAGE_wpa-supplicant-macsec-mbedtls || \
 		   PACKAGE_wpa-supplicant-basic || \
 		   PACKAGE_wpa-supplicant-mini || \
 		   PACKAGE_wpa-supplicant-p2p || \
