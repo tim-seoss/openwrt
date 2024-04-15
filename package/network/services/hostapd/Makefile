@@ -140,7 +140,11 @@ ifneq ($(LOCAL_TYPE),hostapd)
   endif
 endif
 
-DRV_DEPENDS:=+libnl-tiny
+ifneq (,$(findstring macsec,$(CONFIG_VARIANT)))
+  DRV_DEPENDS:=+libnl
+else
+  DRV_DEPENDS:=+libnl-tiny
+endif
 
 
 define Package/hostapd/Default
@@ -392,6 +396,16 @@ endef
 
 Package/wpad-mesh-mbedtls/description = $(Package/wpad-mesh/description)
 
+define Package/wpad-macsec-mbedtls
+$(call Package/wpad/wpad-macsec,$(1))
+  TITLE+= (mbedTLS, 11ae)
+  DEPENDS+=+PACKAGE_wpa-supplicant-mesh-mbedtls:libmbedtls +libnl -libnl-tiny
+  VARIANT:=wpad-macsec-mbedtls
+endef
+
+define Package/wpad-macsec-mbedtls/description
+ This package contains a full featured IEEE 802.1x/WPA/EAP/RADIUS Authenticator and Supplicant with additional 802.11ae (MACsec) support.
+endef
 
 define Package/wpa-supplicant/Default
   SECTION:=net
@@ -469,6 +483,13 @@ $(call Package/wpa-supplicant-mesh/Default,$(1))
   TITLE+= (mbedTLS, 11s, SAE)
   VARIANT:=supplicant-mesh-mbedtls
   DEPENDS+=+PACKAGE_wpa-supplicant-mesh-mbedtls:libmbedtls
+endef
+
+define Package/wpa-supplicant-macsec-mbedtls
+$(call Package/wpa-supplicant-macsec-mbedtls/Default,$(1))
+  TITLE+= (mbedTLS, 11ae)
+  VARIANT:=supplicant-macsec-mbedtls
+  DEPENDS+=+PACKAGE_wpa-supplicant-mesh-mbedtls:libmbedtls +libnl -libnl-tiny
 endef
 
 define Package/wpa-supplicant-basic
@@ -577,15 +598,27 @@ define Build/Configure
 	)
 endef
 
-TARGET_CPPFLAGS := \
-	-I$(STAGING_DIR)/usr/include/libnl-tiny \
+ifneq (,$(findstring macsec,$(CONFIG_VARIANT)))
+	TARGET_CPPFLAGS := -I$(STAGING_DIR)/usr/include/libnl3 -DCONFIG_LIBNL32
+else
+	TARGET_CPPFLAGS := -I$(STAGING_DIR)/usr/include/libnl-tiny -DCONFIG_LIBNL20
+endif
+
+
+TARGET_CPPFLAGS += \
 	-I$(PKG_BUILD_DIR)/src/crypto \
 	$(TARGET_CPPFLAGS) \
-	-DCONFIG_LIBNL20 \
 	-D_GNU_SOURCE \
 	$(if $(CONFIG_WPA_MSG_MIN_PRIORITY),-DCONFIG_MSG_MIN_PRIORITY=$(CONFIG_WPA_MSG_MIN_PRIORITY))
 
-TARGET_LDFLAGS += -lubox -lubus -lblobmsg_json -lucode -lm -lnl-tiny
+
+TARGET_LDFLAGS += -lubox -lubus -lblobmsg_json -lucode -lm
+
+ifneq (,$(findstring macsec,$(CONFIG_VARIANT)))
+  TARGET_LDFLAGS += -lnl-genl-3 -lnl-route-3 -lnl-3
+else
+  TARGET_LDFLAGS += -lnl-tiny
+endif
 
 ifdef CONFIG_WPA_ENABLE_WEP
     DRIVER_MAKEOPTS += CONFIG_WEP=y
