@@ -148,9 +148,7 @@ ifneq ($(LOCAL_TYPE),hostapd)
   endif
 endif
 
-# FIXME trim
 ifneq (,$(findstring macsec,$(LOCAL_VARIANT)))
-  #DRV_DEPENDS:=+libnl +libnl-genl +libnl-route +libnl-nf
   DRV_DEPENDS:=+libnl
 else
   DRV_DEPENDS:=+libnl-tiny
