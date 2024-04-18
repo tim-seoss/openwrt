@@ -51,7 +51,8 @@ config WPA_MSG_MIN_PRIORITY
 		   PACKAGE_wpad-mini || \
 		   PACKAGE_wpad-mesh-openssl || \
 		   PACKAGE_wpad-mesh-wolfssl || \
-		   PACKAGE_wpad-mesh-mbedtls
+		   PACKAGE_wpad-mesh-mbedtls || \
+		   PACKAGE_wpad-macsec-mbedtls
 	default 3
 	help
 	  Useful values are:

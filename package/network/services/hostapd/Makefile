@@ -134,6 +134,9 @@ ifeq ($(SSL_VARIANT),mbedtls)
   ifeq ($(LOCAL_VARIANT),mesh)
     DRIVER_MAKEOPTS += CONFIG_AP=y CONFIG_MESH=y CONFIG_WPS_NFC=1
   endif
+  ifeq ($(LOCAL_VARIANT),macsec)
+    DRIVER_MAKEOPTS += CONFIG_OWE=y CONFIG_SUITEB192=y CONFIG_AP=y CONFIG_MESH=y CONFIG_WPS_NFC=1 CONFIG_MACSEC=1 CONFIG_DRIVER_MACSEC_LINUX=y
+  endif
   ifeq ($(LOCAL_VARIANT),full)
     DRIVER_MAKEOPTS += CONFIG_OWE=y CONFIG_SUITEB192=y CONFIG_AP=y CONFIG_MESH=y CONFIG_WPS_NFC=1
   endif
@@ -145,7 +148,9 @@ ifneq ($(LOCAL_TYPE),hostapd)
   endif
 endif
 
-ifneq (,$(findstring macsec,$(CONFIG_VARIANT)))
+# FIXME trim
+ifneq (,$(findstring macsec,$(LOCAL_VARIANT)))
+  #DRV_DEPENDS:=+libnl +libnl-genl +libnl-route +libnl-nf
   DRV_DEPENDS:=+libnl
 else
   DRV_DEPENDS:=+libnl-tiny
@@ -412,9 +417,9 @@ define Package/wpad-macsec/description
 endef
 
 define Package/wpad-macsec-mbedtls
-$(call Package/wpad/wpad-macsec,$(1))
+$(call Package/wpad-macsec,$(1))
   TITLE+= (mbedTLS, 11ae)
-  DEPENDS+=+PACKAGE_wpad-macsec-mbedtls:libmbedtls +libnl
+  DEPENDS+=+PACKAGE_wpad-macsec-mbedtls:libmbedtls
   VARIANT:=wpad-macsec-mbedtls
 endef
 
@@ -498,11 +503,17 @@ $(call Package/wpa-supplicant-mesh/Default,$(1))
   DEPENDS+=+PACKAGE_wpa-supplicant-mesh-mbedtls:libmbedtls
 endef
 
+define Package/wpa-supplicant-macsec/Default
+$(call Package/wpa-supplicant/Default,$(1))
+  DEPENDS+=@(!TARGET_uml||BROKEN)
+  PROVIDES+=wpa-supplicant-macsec
+endef
+
 define Package/wpa-supplicant-macsec-mbedtls
-$(call Package/wpa-supplicant-macsec-mbedtls/Default,$(1))
+$(call Package/wpa-supplicant-macsec/Default,$(1))
   TITLE+= (mbedTLS, 11ae)
   VARIANT:=supplicant-macsec-mbedtls
-  DEPENDS+=+PACKAGE_wpa-supplicant-macsec-mbedtls:libmbedtls +libnl
+  DEPENDS+=+PACKAGE_wpa-supplicant-macsec-mbedtls:libmbedtls
 endef
 
 define Package/wpa-supplicant-basic
@@ -611,7 +622,7 @@ define Build/Configure
 	)
 endef
 
-ifneq (,$(findstring macsec,$(CONFIG_VARIANT)))
+ifneq (,$(findstring macsec,$(LOCAL_VARIANT)))
 	TARGET_CPPFLAGS := -I$(STAGING_DIR)/usr/include/libnl3 -DCONFIG_LIBNL32
 else
 	TARGET_CPPFLAGS := -I$(STAGING_DIR)/usr/include/libnl-tiny -DCONFIG_LIBNL20
@@ -627,7 +638,7 @@ TARGET_CPPFLAGS += \
 
 TARGET_LDFLAGS += -lubox -lubus -lblobmsg_json -lucode -lm
 
-ifneq (,$(findstring macsec,$(CONFIG_VARIANT)))
+ifneq (,$(findstring macsec,$(LOCAL_VARIANT)))
   TARGET_LDFLAGS += -lnl-genl-3 -lnl-route-3 -lnl-3
 else
   TARGET_LDFLAGS += -lnl-tiny
