@@ -1,3 +1,9 @@
+# Temporary bodge branch
+
+See https://forum.openwrt.org/t/macsec-802-1ae-with-802-1x-eapol-key-management-with-wpa-supplicant/194433/5?u=timsmall for context.
+
+# Original README.md follows
+
 ![OpenWrt logo](include/logo.png)
 
 OpenWrt Project is a Linux operating system targeting embedded devices. Instead
