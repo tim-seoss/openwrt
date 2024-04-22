@@ -1,0 +1,34 @@
+diff --git a/src/drivers/driver_wired_common.h b/src/drivers/driver_wired_common.h
+index 2bb0710bb..9a3555d3d 100644
+--- a/src/drivers/driver_wired_common.h
++++ b/src/drivers/driver_wired_common.h
+@@ -20,7 +20,8 @@ struct driver_wired_common_data {
+ };
+ 
+ static const u8 pae_group_addr[ETH_ALEN] =
+-{ 0x01, 0x80, 0xc2, 0x00, 0x00, 0x03 };
++{ 0x01, 0x80, 0xc2, 0x00, 0x00, 0x1F }; /* The IEEE "Standard Group MAC Addresses" "EDE-CC PEP Address" */
++/* { 0x01, 0x80, 0xc2, 0x00, 0x00, 0x03 }; */ 
+ 
+ int wired_multicast_membership(int sock, int ifindex, const u8 *addr, int add);
+ int driver_wired_get_ssid(void *priv, u8 *ssid);
+diff --git a/src/pae/ieee802_1x_kay.c b/src/pae/ieee802_1x_kay.c
+index b0a418ef0..0fcc36f10 100644
+--- a/src/pae/ieee802_1x_kay.c
++++ b/src/pae/ieee802_1x_kay.c
+@@ -2451,9 +2451,14 @@ ieee802_1x_kay_decide_macsec_use(
+ 	return 0;
+ }
+ 
++/*
+ static const u8 pae_group_addr[ETH_ALEN] = {
+ 	0x01, 0x80, 0xc2, 0x00, 0x00, 0x03
+-};
++}; */
++
++
++static const u8 pae_group_addr[ETH_ALEN] =
++{ 0x01, 0x80, 0xc2, 0x00, 0x00, 0x1F }; /* The IEEE "Standard Group MAC Addresses" "EDE-CC PEP Address" (Ethernet Data Encryption Customer to Customer) */
+ 
+ 
+ /**
