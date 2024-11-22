@@ -1,0 +1,41 @@
+Index: linux-6.6.61/drivers/net/phy/marvell.c
+===================================================================
+--- linux-6.6.61.orig/drivers/net/phy/marvell.c
++++ linux-6.6.61/drivers/net/phy/marvell.c
+@@ -38,6 +38,9 @@
+ #include <asm/irq.h>
+ #include <linux/uaccess.h>
+ 
++/* For timing debugging only TODO remove */
++#include <linux/time.h>
++
+ #define MII_MARVELL_PHY_PAGE		22
+ #define MII_MARVELL_COPPER_PAGE		0x00
+ #define MII_MARVELL_FIBER_PAGE		0x01
+@@ -2042,14 +2045,24 @@ static int marvell_vct5_wait_complete(st
+ {
+ 	int i;
+ 	int val;
++	u64 entrystamp, exitstamp;
++	entrystamp = ktime_get_ns();
++
++	usleep_range(5000, 5000);
++	/* msleep(10); */
+ 
+-	for (i = 0; i < 32; i++) {
++	for (i = 0; i < 100; i++) {
+ 		val = __phy_read(phydev, MII_VCT5_CTRL);
+ 		if (val < 0)
+ 			return val;
+ 
+-		if (val & MII_VCT5_CTRL_COMPLETE)
++		if (val & MII_VCT5_CTRL_COMPLETE) {
++			exitstamp = ktime_get_ns();
++			phydev_warn(phydev, "Got VCT5 ctrl data after polling %d times\n", i);
++			phydev_warn(phydev, "Got VCT5 after %llu ns\n", exitstamp - entrystamp);
+ 			return 0;
++		}
++		usleep_range(500, 500);
+ 	}
+ 
+ 	phydev_err(phydev, "Timeout while waiting for cable test to finish\n");
